@@ -1,0 +1,7 @@
+1082:Anatoliy:Ivanovich:Kapec:Salary
+1083:Vasiliy:Antonovich:Shmatko:HR
+1084:Aleksandr:Antonovich:Smirnov:Software engineer
+1085:Maria:Alekseevna:Vatalina:PR
+1086:Ivan:Urievich:Balakov:Software engineer
+1087:Svetlana:Igorevna:Galopenko:Frontend developer
+1088:Vladimir:Aleksandrovich:Ivanova:Frontend developer
