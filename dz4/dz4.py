@@ -17,34 +17,28 @@ def is_currency(curr):
 
 
 def is_currency_pair_exists(curr1,curr2):
-    pair = f'{curr2}-{curr1}'
-    if curr2 == 'KZT':
-        pair = f'{curr1}-{curr2}'
+    pair = f'{curr1}-{curr2}'
     curr = currency_pairs.get(pair)
     if curr is None: 
-        return False
-    else: 
-        return True
+        pair = f'{curr2}-{curr1}'
+        curr = currency_pairs.get(pair)
+        if curr is None: return False
+        else: return True
+    else: return True
 
 
 def add_update_currency_pair(curr1,curr2,num1,num2):
-    if curr1 == 'KZT':
-        currency_pairs[f'{curr2}-{curr1}'] = round(float(num1) / float(num2), 2)
-    else:
-        pair = f'{curr1}-{curr2}'
-        currency_pairs[pair] = round(float(num2) / float(num1), 2)
+    currency_pairs[f'{curr1}-{curr2}'] = round(float(num2) / float(num1), 3)
 
 
 def get_rate(num,currFrom,currTo):
     result = 0
-    if currFrom == 'KZT':
+    curr = currency_pairs.get(f'{currFrom}-{currTo}')
+    if curr is None:
         curr = currency_pairs.get(f'{currTo}-{currFrom}')
         result = float(num) / curr
-    else:
-        curr = currency_pairs.get(f'{currFrom}-{currTo}')
-        result = float(num) * curr
-    result = round(result,3)
-    return result
+    else: result = float(num) * curr
+    return round(result,3)
 
 
 while True:
