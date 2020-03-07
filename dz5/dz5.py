@@ -1,8 +1,13 @@
 import os
+import sys
 
 
-path = 'C:\\'
+path = sys.argv[1]
 tasks = ''
+
+if not os.path.isdir(path):
+    print('Данный путь не является директорией.\nПоиск будет производиться по директории \'C:\\\'')
+    path = 'C:\\'
 
 
 for i in os.walk(path):
