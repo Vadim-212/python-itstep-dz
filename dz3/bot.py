@@ -24,14 +24,26 @@ def is_user_in_list(id):
     return False
 
 def add_user_in_list(id):
-    new_user = user(id, 0, [])
+    new_user = user(id=id, score=0, guessed_riddles_id=[])
     users.append(new_user)
+
+# def add_guessed_riddle(riddle_id, user_id):
+#     user = get_user_by_id(user_id)
+#     user.score += 1
+#     user.guessed_riddles_id.append(riddle_id)
 
 def get_user_by_id(id):
     for u in users:
         if u.id == id:
             return u
     return None
+
+def add_user_score(user_id):
+    userd = get_user_by_id(user_id)
+    new_user = user(id=userd.id, score=userd.score+1, guessed_riddles_id=userd.guessed_riddles_id)
+    if user is not None:
+        userd = new_user
+    else: print(f'{__name__} - variable "user" is None')
 
 def remove_riddle_by_ids(ids):
     new_riddles = riddles
@@ -46,13 +58,21 @@ def get_random_riddle_to_user(user_id):
     riddles_for_user = riddles
     if curr_user is not None:
         riddles_for_user = remove_riddle_by_ids(curr_user.guessed_riddles_id)
-    return choice(riddles_for_user)
+    if riddles_for_user is []:
+        return None
+    else:
+        random_riddle = choice(riddles_for_user)
+        curr_user.guessed_riddles_id.append(random_riddle.id)
+        return random_riddle
 
 # @bot.message_handler(content_types = ['text'])
 # def repeat_all_messages(message):
 #     bot.send_message(message.chat.id, message.json['text'])
-@bot.message_handler(commands = ['play'])
+@bot.message_handler(commands = ['play', 'score'])
 def start_game(message):
+    if message.json['text'] == '/score':
+        get_score(message)
+        return
     #if is_user_in_list(message.chat.id):
     #    continue_game(message)
     #else:
@@ -60,8 +80,14 @@ def start_game(message):
 
     # Подключаемся к БД
     #db_worker = SQLighter(config.database_name)
+    user = get_user_by_id(message.chat.id)
+    if user is None:
+        add_user_in_list(message.chat.id)
     # Получаем случайную строку из БД
     row = get_random_riddle_to_user(message.chat.id)
+    if row is None:
+        bot.send_message(message.chat.id, 'Все загадки отгаданы! Поздравляем!')
+        return
     # Формируем разметку
     markup = utils.generate_keyboard(row.correct_answer, row.wrong_answers)
     # Отправляем аудиофайл с вариантами ответа
@@ -69,8 +95,19 @@ def start_game(message):
     bot.send_message(message.chat.id, row.text, reply_markup=markup)
     # Включаем "игровой режим"
     utils.set_user_game(message.chat.id, row.correct_answer)
+    
+
     # Отсоединяемся от БД
     #db_worker.close()
+
+
+
+def get_score(message):
+    user = get_user_by_id(message.chat.id)
+    if user is not None:
+        bot.send_message(message.chat.id, f'Ваш счёт - {user.score}')
+    else:
+        bot.send_message(message.chat.id, 'Вы ещё ни разу не сыграли!')
 
 
 @bot.message_handler(func = lambda message: True, content_types = ['text'])
@@ -87,6 +124,7 @@ def continue_game(message):
         # Если ответ правильный/неправильный
         if message.text == answer:
             bot.send_message(message.chat.id, 'Верно!', reply_markup=keyboard_hider)
+            add_user_score(message.chat.id)
         else:
             bot.send_message(message.chat.id, 'Вы не угадали. Попробуйте ещё раз!', reply_markup=keyboard_hider)
         # Удаляем юзера из хранилища (игра закончена)
