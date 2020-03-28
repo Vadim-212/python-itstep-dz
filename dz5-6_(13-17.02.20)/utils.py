@@ -31,6 +31,5 @@ def get_answer_for_user(chat_id):
         try:
             answer = storage[str(chat_id)]
             return answer
-        # Если человек не играет, ничего не возвращаем
         except KeyError:
             return None

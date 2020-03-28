@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-token = '509675376:AAF0au_XmUsdOrBzESGkbaP5fCHLOCUyjWc'
-shelve_name = 'python-itstep-dz/dz3/files/shelve.db'
+token = '-'
+shelve_name = 'python-itstep-dz/dz5-6_(13-17.02.20)/files/shelve.db'
