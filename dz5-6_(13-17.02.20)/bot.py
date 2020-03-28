@@ -42,7 +42,8 @@ def add_user_score(user_id):
     else: print(f'{__name__} - variable "user" is None')
 
 def remove_riddle_by_ids(ids):
-    new_riddles = riddles
+    new_riddles = []
+    new_riddles[:] = riddles[:]
     for r in riddles:
         for i in ids:
             if r.id == i:
